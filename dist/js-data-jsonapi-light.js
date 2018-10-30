@@ -421,12 +421,24 @@ function jsonApiSerialize(mapper, data, opts) {
                 attributes[key] = data[key];
                 continue;
             }
-            relationships[relation.localField] = {
-                data: {
-                    type: relation.relation,
-                    id: data[key]
+
+            if (relation.type === 'manyToMany' && js_data_1.utils.isArray(data[key])) {
+                relationships[relation.localField] = {data: []};
+                for (var i = 0, length = data[key].length; i < length; i++) {
+                    relationships[relation.localField].data.push({
+                        id: data[key][i],
+                        type: relation.relation
+                    });
                 }
-            };
+            }
+            else {
+                relationships[relation.localField] = {
+                    data: {
+                        type: relation.relation,
+                        id: data[key]
+                    }
+                };
+            }
         }
     }
     else {
