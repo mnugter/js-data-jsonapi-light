@@ -50,12 +50,22 @@ export function jsonApiSerialize (mapper:any, data:any, opts:any){
         continue;
       }
 
-      // Relation that can be in data are only belongsTo
-      relationships[relation.localField] = {
-        data: {
-          type: relation.relation,
-          id: data[key]
-        }
+      if (relation.type === 'manyToMany' && utils.isArray(data[key])) {
+          relationships[relation.localField] = { data: [] };
+          for (let i = 0, length = data[key].length; i < length; i++) {
+              relationships[relation.localField].data.push({
+                  id: data[key][i],
+                  type: relation.relation
+              });
+          }
+      }
+      else
+      {
+          relationships[relation.localField] = {
+              data: data[key]
+                ? {type: relation.relation, id: data[key]}
+                : null
+          }
       }
     }
   } else {
