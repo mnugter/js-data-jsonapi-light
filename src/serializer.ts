@@ -59,8 +59,7 @@ export function jsonApiSerialize (mapper:any, data:any, opts:any){
               });
           }
       }
-      else
-      {
+      else {
           relationships[relation.localField] = {
               data: data[key]
                 ? {type: relation.relation, id: data[key]}
